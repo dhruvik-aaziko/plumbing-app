@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plumbing Product Listing</title>
+    <style>
+        .summary {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .product-item {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Plumbing Product Listing App</h1>
+
+    <div id="inputContainer">
+        <!-- Input box for asking quantities will appear here -->
+    </div>
+
+    <div class="summary">
+        <h3>Live Summary:</h3>
+        <ul id="liveSummary">
+            <!-- Live summary of inputs will appear here -->
+        </ul>
+    </div>
+
+    <div class="total" id="totalBill">Total Bill: 0 pieces</div>
+
+    <script>
+        const products = [
+            { name: 'એલ્બો' },
+            { name: 'ટી બેન્ડ' },
+            { name: 's bend' },
+            { name: 'pipe' }
+        ];
+
+        let currentProductIndex = 0;
+        let finalList = [];
+        let totalPieces = 0;
+
+        function askNextProduct() {
+            if (currentProductIndex < products.length) {
+                const inputContainer = document.getElementById('inputContainer');
+                inputContainer.innerHTML = `
+                    <label for="productQuantity">${products[currentProductIndex].name}: </label>
+                    <input type="number" id="productQuantity" min="0" value="0" />
+                    <button onclick="submitQuantity()">Submit</button>
+                `;
+            } else {
+                displayFinalList();
+            }
+        }
+
+        function submitQuantity() {
+            const quantity = document.getElementById('productQuantity').value;
+            const product = products[currentProductIndex];
+
+            finalList.push({ name: product.name, quantity: parseInt(quantity) || 0 });
+            totalPieces += parseInt(quantity) || 0;
+
+            updateLiveSummary();
+            document.getElementById('totalBill').innerText = `Total Bill: ${totalPieces} pieces`;
+
+            currentProductIndex++;
+            askNextProduct();
+        }
+
+        function updateLiveSummary() {
+            const liveSummary = document.getElementById('liveSummary');
+            liveSummary.innerHTML = ''; // Clear the existing summary
+
+            finalList.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.innerText = `${item.name}: ${item.quantity} pieces`;
+                liveSummary.appendChild(listItem);
+            });
+        }
+
+        function displayFinalList() {
+            let result = 'Final Listing:\n';
+            finalList.forEach(item => {
+                result += `${item.name}: ${item.quantity} pieces\n`;
+            });
+            alert(result);
+        }
+
+        // Start asking for quantities when the page loads
+        window.onload = askNextProduct;
+    </script>
+</body>
+</html>
